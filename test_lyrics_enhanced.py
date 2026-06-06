@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+歌词创作辅助模块 - 增强版测试
+包含图片里的技巧：预副歌、告白/分手情歌模板等
+"""
+
 from dataclasses import dataclass
 from typing import List, Dict, Optional, Union
 import random
@@ -153,13 +159,6 @@ class LyricTemplateLibrary:
         SongStructure.FULL_STRUCTURE: ["Verse 1", "Pre-Chorus", "Chorus", "Verse 2", "Pre-Chorus", "Chorus", "Bridge", "Chorus"]
     }
 
-    TRANSITIONS = {
-        "Verse->Chorus": ["于是", "所以", "而如今", "可", "但是", "然而", "不过", "直到"],
-        "Chorus->Verse": ["还记得", "想起", "又看见", "每当", "每当我"],
-        "Verse->Bridge": ["其实", "我知道", "也许", "如果", "假如"],
-        "Bridge->Chorus": ["所以", "于是", "因此", "就这样"]
-    }
-
     # 图片里的超直白口诀
     WRITING_RULES = {
         "Verse": "写画面、写事情、写细节，不要喊口号，不要放金句",
@@ -273,7 +272,6 @@ class LyricGenerator:
         verse = []
         rhyme_group = random.choice(list(self.templates.RHYME_DICTS.keys()))
         
-        # 根据歌曲类型定制内容
         if self.config.song_type:
             song_type_template = self.templates.SONG_TYPES.get(self.config.song_type, {})
             if verse_num == 1:
@@ -304,7 +302,6 @@ class LyricGenerator:
         num_lines = num_lines or self.config.pre_chorus_lines
         pre_chorus = []
         
-        # 预副歌：写纠结、写犹豫、写铺垫，快要爆发但还没爆发
         hesitation_words = [
             "我想说却又不敢",
             "心跳越来越快",
@@ -340,7 +337,6 @@ class LyricGenerator:
         chorus = []
         rhyme_group = random.choice(list(self.templates.RHYME_DICTS.keys()))
         
-        # 副歌：写态度、写心声、写核心
         hooks = []
         if self.config.song_type == SongType.CONFESSION:
             hooks = [
@@ -375,7 +371,6 @@ class LyricGenerator:
         num_lines = num_lines or self.config.bridge_lines
         bridge = []
         
-        # 桥段：写醒悟、写成长、写决定
         realization_words = [
             "其实我早就该明白",
             "终于我想通了",
@@ -495,35 +490,46 @@ class LyricsWritingAssistant:
         formatted = self.generator.format_song(song)
         return formatted
 
-    def generate_with_tips(self, theme: str, mood: str) -> str:
-        config = LyricConfig(theme=theme, mood=mood)
-        song = self.generator.generate(config)
-        formatted = self.generator.format_song(song)
-        tips = self.get_tips()
-        tip_section = "\n\n💡 歌词创作技巧建议：\n" + "\n".join([f"- {t}" for t in tips[:5]])
-        return formatted + tip_section
 
-    def brainstorm_themes(self) -> List[str]:
-        return [
-            "想念一个人",
-            "告别一段感情",
-            "追逐梦想",
-            "怀念过去",
-            "城市孤独",
-            "雨后的心情",
-            "深夜的思考",
-            "旅行的意义",
-            "友谊万岁",
-            "自我成长"
-        ]
+def print_separator(title):
+    print("\n" + "=" * 60)
+    print(f"  {title}")
+    print("=" * 60)
 
-    def refine_lyric(self, line: str, suggestion: str) -> str:
-        if "更具体" in suggestion:
-            imagery = self.generator.templates.IMAGERY.get("sad", [])
-            if imagery:
-                return f"{line}，{random.choice(imagery)}还在"
-        elif "更有画面" in suggestion:
-            scenes = ["窗外", "街角", "路灯下", "旧房间", "车站"]
-            if scenes:
-                return f"{random.choice(scenes)}，{line}"
-        return line
+
+def test_module():
+    assistant = LyricsWritingAssistant()
+    
+    # 1. 测试创作技巧
+    print_separator("1. 歌词创作技巧（来自图片）")
+    tips = assistant.get_tips()
+    for i, tip in enumerate(tips[:10], 1):
+        print(f"{i}. {tip}")
+    
+    # 2. 测试各部分写作口诀
+    print_separator("2. 各部分写作口诀（超直白）")
+    for section, rule in LyricTemplateLibrary.WRITING_RULES.items():
+        print(f"[{section}] {rule}")
+    
+    # 3. 测试各部分功能说明
+    print_separator("3. 各部分功能说明（来自图片）")
+    for section, func in LyricTemplateLibrary.SECTION_FUNCTIONS.items():
+        print(f"[{section}] {func}")
+    
+    # 4. 生成告白情歌
+    print_separator("4. 生成示例：告白情歌")
+    confession_song = assistant.generate_confession_song()
+    print(confession_song)
+    
+    # 5. 生成分手情歌
+    print_separator("5. 生成示例：分手/释怀情歌")
+    breakup_song = assistant.generate_breakup_song()
+    print(breakup_song)
+    
+    print("\n" + "=" * 60)
+    print("  ✨ 所有功能测试完成！✨")
+    print("=" * 60)
+
+
+if __name__ == "__main__":
+    test_module()

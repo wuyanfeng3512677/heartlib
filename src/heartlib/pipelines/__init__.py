@@ -1,4 +1,4 @@
-from .lyrics_generation import LyricConfig, LyricGenerator, LyricsWritingAssistant, SongStructure, OpeningTechnique, NarrativeTechnique
+from .lyrics_generation import LyricConfig, LyricGenerator, LyricsWritingAssistant, SongStructure, OpeningTechnique, NarrativeTechnique, SongType
 
 __all__ = [
     "LyricConfig",
@@ -6,5 +6,6 @@ __all__ = [
     "LyricsWritingAssistant",
     "SongStructure",
     "OpeningTechnique",
-    "NarrativeTechnique"
+    "NarrativeTechnique",
+    "SongType"
 ]
